@@ -11,12 +11,12 @@
 @implementation RNPinchableView
 
 BOOL isActive = NO;
-CGFloat lastScale;
 NSUInteger lastNumberOfTouches;
 UIView *initialSuperView;
 NSUInteger initialIndex;
 CGRect initialFrame;
 CGPoint initialTouchPoint;
+CGPoint lastTouchPoint;
 UIView *backgroundView;
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -33,12 +33,12 @@ UIView *backgroundView;
 - (void)resetGestureState
 {
   isActive = NO;
-  lastScale = 1.;
   lastNumberOfTouches = 0;
   initialSuperView = nil;
   initialIndex = -1;
   initialFrame = CGRectZero;
   initialTouchPoint = CGPointZero;
+  lastTouchPoint = CGPointZero;
   backgroundView = nil;
 }
 
@@ -57,17 +57,19 @@ UIView *backgroundView;
 - (void)handlePinchGesture:(UIPinchGestureRecognizer *)gestureRecognizer
 {
   UIView *view = gestureRecognizer.view;
+  UIWindow *window = UIApplication.sharedApplication.keyWindow;
   if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
-    UIWindow *window = UIApplication.sharedApplication.keyWindow;
     lastNumberOfTouches = gestureRecognizer.numberOfTouches;
     initialFrame = view.frame;
-    initialTouchPoint = [gestureRecognizer locationInView:view];
-    CGPoint absoluteOrigin = [view.superview convertPoint:view.frame.origin toView:window];
-    CGPoint anchorPoint = CGPointMake(initialTouchPoint.x/initialFrame.size.width, initialTouchPoint.y/initialFrame.size.height);
+    initialTouchPoint = [gestureRecognizer locationInView:window];
     isActive = YES;
     initialSuperView = view.superview;
     initialIndex = [initialSuperView.subviews indexOfObject:view];
     
+    CGPoint center = [gestureRecognizer locationInView:view];
+    CGPoint absoluteOrigin = [view.superview convertPoint:view.frame.origin toView:window];
+    CGPoint anchorPoint = CGPointMake(center.x/initialFrame.size.width, center.y/initialFrame.size.height);
+
     backgroundView = [UIView new];
     backgroundView.backgroundColor = UIColor.blackColor;
     backgroundView.frame = window.frame;
@@ -75,7 +77,7 @@ UIView *backgroundView;
     [window addSubview:view];
     
     view.layer.anchorPoint = anchorPoint;
-    view.center = initialTouchPoint;
+    view.center = center;
     view.frame = CGRectMake(absoluteOrigin.x, absoluteOrigin.y, initialFrame.size.width, initialFrame.size.height);
     [initialSuperView setNeedsLayout];
     [view setNeedsLayout];
@@ -84,31 +86,25 @@ UIView *backgroundView;
   if (gestureRecognizer.state == UIGestureRecognizerStateBegan ||
       gestureRecognizer.state == UIGestureRecognizerStateChanged) {
     
-    CGFloat currentScale = [[gestureRecognizer.view.layer valueForKeyPath:@"transform.scale"] floatValue];
-    CGPoint currentTouchPoint = [gestureRecognizer locationInView:view];
+    CGPoint currentTouchPoint = [gestureRecognizer locationInView:window];
     
-    CGFloat deltaScale = 1 - (lastScale - gestureRecognizer.scale);
-    deltaScale = MIN(deltaScale, _maximumZoomScale / currentScale);
-    deltaScale = MAX(deltaScale, _minimumZoomScale / currentScale);
-    
-    CGFloat deltaX = currentTouchPoint.x - initialTouchPoint.x;
-    CGFloat deltaY = currentTouchPoint.y - initialTouchPoint.y;
-
     if (lastNumberOfTouches != gestureRecognizer.numberOfTouches) {
       lastNumberOfTouches = gestureRecognizer.numberOfTouches;
+      CGFloat deltaX = currentTouchPoint.x - lastTouchPoint.x;
+      CGFloat deltaY = currentTouchPoint.y - lastTouchPoint.y;
       initialTouchPoint = CGPointMake(initialTouchPoint.x + deltaX, initialTouchPoint.y + deltaY);
-      deltaX = 0;
-      deltaY = 0;
     }
 
-    CGAffineTransform transform = gestureRecognizer.view.transform;
-    transform = CGAffineTransformScale(transform, deltaScale, deltaScale);
-    transform = CGAffineTransformTranslate(transform, deltaX, deltaY);
-    
-    view.transform = transform;
+    CGFloat scale = MAX(MIN(gestureRecognizer.scale, _maximumZoomScale), _minimumZoomScale);
+    CGPoint translate = CGPointMake(currentTouchPoint.x - initialTouchPoint.x, currentTouchPoint.y - initialTouchPoint.y);
 
-    lastScale = gestureRecognizer.scale;
-    backgroundView.layer.opacity = MIN(lastScale - 1., .7);
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    transform = CGAffineTransformTranslate(transform, translate.x, translate.y);
+    transform = CGAffineTransformScale(transform, scale, scale);
+    view.transform = transform;
+    
+    backgroundView.layer.opacity = MIN(scale - 1., .7);
+    lastTouchPoint = currentTouchPoint;
   }
 
   if (gestureRecognizer.state == UIGestureRecognizerStateEnded ||
