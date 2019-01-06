@@ -1,0 +1,19 @@
+require 'json'
+version = JSON.parse(File.read('package.json'))["version"]
+
+Pod::Spec.new do |s|
+
+  s.name            = 'react-native-pinchable'
+  s.version         = version
+  s.homepage        = 'https://github.com/oblador/react-native-pinchable'
+  s.license         = "MIT"
+  s.author          = { "Joel Arvidsson" => "joel@oblador.se" }
+  s.summary         = 'Instagram like pinch to zoom for React Native.'
+  s.source          = { :git => 'https://github.com/oblador/react-native-pinchable.git', :tag => "v#{s.version}" }
+  s.source_files    = 'ios/*.{h,m}'
+  s.preserve_paths  = "**/*.js"
+  s.requires_arc    = true
+  s.platform        = :ios, "9.0"
+
+  s.dependency 'React'
+end

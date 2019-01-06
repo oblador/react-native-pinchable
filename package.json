@@ -1,0 +1,35 @@
+{
+  "name": "react-native-pinchable",
+  "version": "0.1.0",
+  "description": "Pinch to zoom for React Native",
+  "main": "index.js",
+  "scripts": {
+    "test": "exit 0"
+  },
+  "keywords": [
+    "react-native",
+    "react-component",
+    "react-native-component",
+    "react",
+    "mobile",
+    "ios",
+    "ui",
+    "gesture",
+    "zoom",
+    "pinch",
+    "image"
+  ],
+  "author": {
+    "name": "Joel Arvidsson",
+    "email": "joel@oblador.se"
+  },
+  "homepage": "https://github.com/oblador/react-native-pinchable",
+  "bugs": {
+    "url": "https://github.com/oblador/react-native-pinchable/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/oblador/react-native-pinchable.git"
+  },
+  "license": "MIT"
+}
