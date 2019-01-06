@@ -27,8 +27,8 @@ const DanTheMan = () => (
 
 export default () => (
   <FlatList
-    data={new Array(20).fill(null).map((_,i) => i.toString())}
-    numColumns={3}
+    data={new Array(5).fill(null).map((_,i) => i.toString())}
+    numColumns={2}
     keyExtractor={item => item}
     renderItem={DanTheMan}
     style={styles.container}
