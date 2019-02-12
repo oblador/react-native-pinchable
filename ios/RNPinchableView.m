@@ -51,7 +51,16 @@ UIView *backgroundView;
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
-  return !isActive;
+  if (isActive) {
+    return NO;
+  }
+  UIView *view = gestureRecognizer.view;
+  UIWindow *window = UIApplication.sharedApplication.keyWindow;
+  CGPoint absoluteOrigin = [view.superview convertPoint:view.frame.origin toView:window];
+  if (isnan(absoluteOrigin.x) || isnan(absoluteOrigin.y)) {
+    return NO;
+  }
+  return YES;
 }
 
 - (void)handlePinchGesture:(UIPinchGestureRecognizer *)gestureRecognizer
