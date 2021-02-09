@@ -1,6 +1,6 @@
 {
   "name": "react-native-pinchable",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Pinch to zoom for React Native",
   "main": "index.js",
   "scripts": {
