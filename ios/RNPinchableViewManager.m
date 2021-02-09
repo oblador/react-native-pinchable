@@ -11,7 +11,7 @@
 
 @implementation RNPinchableViewManager
 
-RCT_EXPORT_MODULE()
+RCT_EXPORT_MODULE(PinchableView)
 
 - (RNPinchableView *)view
 {

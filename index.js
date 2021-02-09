@@ -1,3 +1,3 @@
-import { Platform, requireNativeComponent, View } from 'react-native';
+import { requireNativeComponent } from 'react-native';
 
-export default Platform.OS === 'ios' ? requireNativeComponent('RNPinchableView') : View;
+export default requireNativeComponent('PinchableView');
