@@ -8,7 +8,7 @@ Instagram like pinch to zoom for React Native.
 # Add dependency
 yarn add react-native-pinchable
 # Link iOS dependency
-cd ios; pod install; cd ..
+pod install --project-directory=ios
 # Compile project
 react-native run-ios # or run-android
 ```
