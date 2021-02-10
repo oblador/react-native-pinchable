@@ -49,6 +49,11 @@ public class PinchableView extends ReactViewGroup implements OnTouchListener {
                     startGesture(v, event);
                 }
                 break;
+            case MotionEvent.ACTION_POINTER_UP:
+                if (active && event.getPointerCount() < 2) {
+                    endGesture(event);
+                }
+                break;
             case MotionEvent.ACTION_MOVE:
                 if (active) {
                     moveGesture(event);
