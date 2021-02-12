@@ -40,6 +40,12 @@ public class PinchableView extends ReactViewGroup implements OnTouchListener {
         super(context);
         this.setOnTouchListener(this);
     }
+    
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent event) {
+        // Block touch events on children
+        return true;
+    }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
