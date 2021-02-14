@@ -4,7 +4,7 @@
   "description": "Pinch to zoom for React Native",
   "main": "index.js",
   "scripts": {
-    "test": "exit 0"
+    "format": "prettier --write *.{md,js,json}"
   },
   "keywords": [
     "react-native",
@@ -31,5 +31,8 @@
     "type": "git",
     "url": "git://github.com/oblador/react-native-pinchable.git"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "^2.2.1"
+  }
 }

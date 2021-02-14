@@ -1,6 +1,6 @@
 # react-native-pinchable
 
-Instagram like pinch to zoom for React Native. 
+Instagram like pinch to zoom for React Native.
 
 ## Installation
 
@@ -25,14 +25,14 @@ import Pinchable from 'react-native-pinchable';
 
 ### Properties
 
-| Prop | Description | Default |
-|------|-------------|---------|
-|**`minimumZoomScale`**|The minimum allowed zoom scale.|`1`|
-|**`maximumZoomScale`**|The maximum allowed zoom scale.|`3`|
+| Prop                   | Description                     | Default |
+| ---------------------- | ------------------------------- | ------- |
+| **`minimumZoomScale`** | The minimum allowed zoom scale. | `1`     |
+| **`maximumZoomScale`** | The maximum allowed zoom scale. | `3`     |
 
 ## Limitations
 
-On Android it's not possible to receive touch events on the views inside the `Pinchable` component. 
+On Android it's not possible to receive touch events on the views inside the `Pinchable` component.
 
 ## Demo
 
