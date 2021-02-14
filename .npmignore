@@ -3,3 +3,6 @@ yarn.lock
 Example
 xcuserdata
 .github
+android/*
+!android/src
+!android/build.gradle

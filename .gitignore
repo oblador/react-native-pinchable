@@ -1,11 +1,3 @@
-# Logs
-#
-*.log
-
-# Dependency directory
-#
-node_modules
-
 # OSX
 #
 .DS_Store
@@ -28,4 +20,23 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-project.xcworkspace
+
+# Android/IntelliJ
+#
+build/
+.idea
+.gradle
+local.properties
+*.iml
+
+# node.js
+#
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# BUCK
+buck-out/
+\.buckd/
+*.keystore
+!debug.keystore

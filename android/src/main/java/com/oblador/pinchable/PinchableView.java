@@ -3,7 +3,6 @@ package com.oblador.pinchable;
 import java.lang.Math;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.Color;
@@ -12,7 +11,6 @@ import android.graphics.Bitmap;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -22,6 +20,7 @@ import android.view.animation.DecelerateInterpolator;
 import com.facebook.react.views.view.ReactViewGroup;
 
 public class PinchableView extends ReactViewGroup implements OnTouchListener {
+    private final int animationDuration = 400;
     private float minScale = 1f;
     private float maxScale = 3f;
     private boolean active = false;
@@ -32,7 +31,6 @@ public class PinchableView extends ReactViewGroup implements OnTouchListener {
     private PointF translation = new PointF();
     private float scale = 1;
     private ValueAnimator currentAnimator = null;
-    private int animationDuration = 400;
     private ColorDrawable backdrop = null;
     private BitmapDrawable clone = null;
 
@@ -165,12 +163,9 @@ public class PinchableView extends ReactViewGroup implements OnTouchListener {
         ValueAnimator animator = ValueAnimator.ofFloat(1, 0);
         animator.setDuration(animationDuration);
         animator.setInterpolator(new DecelerateInterpolator(1.5f));
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator updatedAnimation) {
-                float animatedValue = (float)updatedAnimation.getAnimatedValue();
-                setCloneTransforms(translation.x * animatedValue, translation.y * animatedValue, 1 + (scale - 1) * animatedValue);
-            }
+        animator.addUpdateListener(updatedAnimation -> {
+            float animatedValue = (float)updatedAnimation.getAnimatedValue();
+            setCloneTransforms(translation.x * animatedValue, translation.y * animatedValue, 1 + (scale - 1) * animatedValue);
         });
 
         animator.addListener(new AnimatorListenerAdapter() {
