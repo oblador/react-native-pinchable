@@ -16,6 +16,7 @@ UIView *initialSuperView;
 NSUInteger initialIndex;
 CGRect initialFrame;
 CGPoint initialTouchPoint;
+CGPoint initialAnchorPoint;
 CGPoint lastTouchPoint;
 UIView *backgroundView;
 
@@ -38,6 +39,7 @@ UIView *backgroundView;
   initialIndex = -1;
   initialFrame = CGRectZero;
   initialTouchPoint = CGPointZero;
+  initialAnchorPoint = CGPointZero;
   lastTouchPoint = CGPointZero;
   backgroundView = nil;
 }
@@ -74,6 +76,7 @@ UIView *backgroundView;
     isActive = YES;
     initialSuperView = view.superview;
     initialIndex = [initialSuperView.subviews indexOfObject:view];
+    initialAnchorPoint = view.layer.anchorPoint;
     
     CGPoint center = [gestureRecognizer locationInView:view];
     CGPoint absoluteOrigin = [view.superview convertPoint:view.frame.origin toView:window];
@@ -124,6 +127,7 @@ UIView *backgroundView;
     } completion:^(BOOL finished) {
       [backgroundView removeFromSuperview];
       [initialSuperView insertSubview:view atIndex:initialIndex];
+      view.layer.anchorPoint = initialAnchorPoint;
       view.frame = initialFrame;
       [self resetGestureState];
     }];
