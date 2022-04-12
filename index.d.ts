@@ -1,5 +1,5 @@
-import { HostComponent } from 'react-native'
-type PinchableViewProps = {
+import { HostComponent, ViewProps } from 'react-native'
+interface PinchableViewProps  extends ViewProps {
   /** The minimum allowed zoom scale
    * @default 1
    **/
