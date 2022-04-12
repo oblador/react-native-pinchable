@@ -3,6 +3,7 @@
   "version": "0.2.1",
   "description": "Pinch to zoom for React Native",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "format": "prettier --write *.{md,js,json}"
   },
