@@ -8,6 +8,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -15,8 +17,11 @@ import android.view.View.OnTouchListener;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.view.ViewParent;
+import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 
+import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.views.view.ReactViewGroup;
 
 public class PinchableView extends ReactViewGroup implements OnTouchListener {
@@ -33,9 +38,10 @@ public class PinchableView extends ReactViewGroup implements OnTouchListener {
     private ValueAnimator currentAnimator = null;
     private ColorDrawable backdrop = null;
     private BitmapDrawable clone = null;
-
+    private ThemedReactContext ctx = null;
     public PinchableView(Context context) {
         super(context);
+        this.ctx = (ThemedReactContext) context;
         this.setOnTouchListener(this);
     }
     
@@ -102,6 +108,8 @@ public class PinchableView extends ReactViewGroup implements OnTouchListener {
     }
 
     private void startGesture(View v, MotionEvent event) {
+        ctx.getCurrentActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         if (currentAnimator != null) {
             currentAnimator.cancel();
         }
@@ -155,14 +163,12 @@ public class PinchableView extends ReactViewGroup implements OnTouchListener {
 
     private void endGesture(MotionEvent event) {
         active = false;
-        this.getParent().requestDisallowInterceptTouchEvent(false);
         if (currentAnimator != null) {
             currentAnimator.cancel();
         }
-
         ValueAnimator animator = ValueAnimator.ofFloat(1, 0);
         animator.setDuration(animationDuration);
-        animator.setInterpolator(new DecelerateInterpolator(1.5f));
+        animator.setInterpolator(new DecelerateInterpolator(5f));
         animator.addUpdateListener(updatedAnimation -> {
             float animatedValue = (float)updatedAnimation.getAnimatedValue();
             setCloneTransforms(translation.x * animatedValue, translation.y * animatedValue, 1 + (scale - 1) * animatedValue);
@@ -171,12 +177,21 @@ public class PinchableView extends ReactViewGroup implements OnTouchListener {
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
                 endAnimation();
             }
 
             @Override
             public void onAnimationCancel(Animator animation) {
+                super.onAnimationCancel(animation);
                 endAnimation();
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                ctx.getCurrentActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }
         });
         animator.start();
@@ -195,6 +210,15 @@ public class PinchableView extends ReactViewGroup implements OnTouchListener {
             clone = null;
         }
         setVisibility(View.VISIBLE);
+        ViewParent parent = this.getParent();
+        final Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ctx.getCurrentActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                parent.requestDisallowInterceptTouchEvent(false);
+            }
+        }, 100);
     }
 
     public void setMinimumZoomScale(float minimumZoomScale) {
