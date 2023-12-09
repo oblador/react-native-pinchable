@@ -5,6 +5,7 @@ import java.lang.Math;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.Bitmap;
@@ -110,11 +111,12 @@ public class PinchableView extends ReactViewGroup implements OnTouchListener {
             rootView.getOverlay().remove(clone);
             clone = null;
         }
+        
         Bitmap snapshot = null;
-        v.setDrawingCacheEnabled(true);
-        v.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_AUTO);
         try {
-            snapshot = Bitmap.createBitmap(v.getDrawingCache(true));
+            snapshot = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(snapshot);
+            v.draw(canvas);
             clone = new BitmapDrawable(this.getContext().getResources(), snapshot);
         } catch(Exception ex) {
             ex.printStackTrace();
