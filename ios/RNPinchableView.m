@@ -90,7 +90,11 @@ UIView *backgroundView;
     
     view.layer.anchorPoint = anchorPoint;
     view.center = center;
-    view.frame = CGRectMake(absoluteOrigin.x, absoluteOrigin.y, initialFrame.size.width, initialFrame.size.height);
+
+    if (!isnan(absoluteOrigin.x) && !isnan(absoluteOrigin.y)) {
+      view.frame = CGRectMake(absoluteOrigin.x, absoluteOrigin.y, initialFrame.size.width, initialFrame.size.height);
+    }
+
     [initialSuperView setNeedsLayout];
     [view setNeedsLayout];
   }
@@ -114,8 +118,13 @@ UIView *backgroundView;
     transform = CGAffineTransformTranslate(transform, translate.x, translate.y);
     transform = CGAffineTransformScale(transform, scale, scale);
     view.transform = transform;
-    
-    backgroundView.layer.opacity = MIN(scale - 1., .7);
+
+    CGFloat layerOpacity = MIN(scale - 1., .7);
+    if (layerOpacity <= 0) {
+      layerOpacity = .05;
+    }
+
+    backgroundView.layer.opacity = layerOpacity;
     lastTouchPoint = currentTouchPoint;
   }
 
